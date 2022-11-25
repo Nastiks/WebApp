@@ -1,0 +1,50 @@
+﻿@page
+@model WebApplic.Areas.TableOutputModel
+
+<h2 class="text-primary">User List</h2>
+
+@if (Model.Users.Count() > 0)
+{
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Date of registration
+                </th>
+                <th>
+                    Last login date
+                </th>
+                <th>
+                    Status
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td width="50%">@user.Id</td>
+                    <td width="30%">@user.UserName</td>
+                    <td width="30%">@user.Email</td>
+                    <td width="30%">@user.RegisterTimeStamp</td>
+                    <td width="30%">@user.LastLogin</td>
+                    <td width="30%">@user.Blocked</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No user exists.</p>
+}

@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@model Dictionary<ApplicationUser, bool>
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="container-3">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h2 class="text-primary">User List</h2>
+            </div>
+        </div>
+
+        <div class="toolbox-container">
+            <form id="table-form" method="post">
+                <button class="btn oi oi-lock-unlocked" />
+                <button class="btn oi oi-circle-x" />
+                <button class="btn" type="submit"> Block </button>
+            </form>
+        </div>
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-bordered table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>
+                            <div>
+                                <input type="checkbox" onClick="toggle(this)" />
+                            </div>
+                        </th>
+                        <th>
+                            Id
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                            Date of registration
+                        </th>
+                        <th>
+                            Last login date
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div>
+                                    <input name="checkbox" type="checkbox" value="@user.Value" />
+                                </div>
+                            </td>
+                            <td width="50%">@user.Key.Id</td>
+                            <td width="30%">@user.Key.UserName</td>
+                            <td width="30%">@user.Key.Email</td>
+                            <td width="30%">@user.Key.RegisterTimeStamp</td>
+                            <td width="30%">@user.Key.LastLogin</td>
+                            <td width="30%">@user.Key.Blocked</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No user exists.</p>
+        }
+    </div>
+}
+else
+{
+    <script>
+        window.location.href = '/Identity/Account/Login';
+    </script>
+}
+
+<script>
+    function toggle(source) {
+        checkboxes = document.getElementsByName('checkbox');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+</script>

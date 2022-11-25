@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using WebApplic.Areas;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <script>
+        window.location.href = '/User/Index';
+    </script>
+}
+else
+{
+    <script>
+        window.location.href = '/Identity/Account/Login';
+    </script>
+}

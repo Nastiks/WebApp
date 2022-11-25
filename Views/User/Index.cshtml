@@ -1,0 +1,154 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@model Dictionary<ApplicationUser, bool>
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="container-3">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h3>
+                    List of users
+                    <small class="text-muted">who exist in the system</small>
+                </h3>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-light bg-light">
+            <form id="table-form" method="post">
+                <button class="btn" onclick="blockUsers()"> Block </button>
+                <button class="btn oi oi-lock-unlocked" onclick="unblockUsers()" />
+                <button class="btn oi oi-circle-x" onclick="deleteUsers()" />
+            </form>
+        </nav>
+
+        @if (Model.Count() > 0)
+        {
+            <table class="table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <div>
+                                <input type="checkbox" onClick="toggle(this)" />
+                            </div>
+                        </th>
+                        <th scope="col">
+                            Id
+                        </th>
+                        <th scope="col">
+                            Name
+                        </th>
+                        <th scope="col">
+                            Email
+                        </th>
+                        <th scope="col">
+                            Date of registration
+                        </th>
+                        <th scope="col">
+                            Last login date
+                        </th>
+                        <th scope="col">
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div>
+                                    <input name="checkbox" id="@user.Key.Id" type="checkbox" value="@user.Value" />
+                                </div>
+                            </td>
+                            <td width="50%">@user.Key.Id</td>
+                            <th scope="row" width="30%">@user.Key.UserName</th>
+                            <td width="30%">@user.Key.Email</td>
+                            <td width="30%">@user.Key.RegisterTimeStamp</td>
+                            <td width="30%">@user.Key.LastLogin</td>
+                            <td width="30%">@(user.Key.Blocked ? "Blocked" : "Active")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No user exists.</p>
+        }
+    </div>
+}
+else
+{
+    <script>
+        window.location.href = '/Identity/Account/Login';
+    </script>
+}
+
+<script>
+
+    function deleteUsers() {
+        checkboxes = document.getElementsByName('checkbox');
+        let query = '?userList=';
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            if (checkboxes[i].checked) {
+                query += checkboxes[i].id + ','
+            }
+        }
+        if (query === '?userList=') {
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/User/DeleteConfirmed' + query, false);
+        xhr.send();
+
+        window.location.href = '/';
+    }
+    
+    function blockUsers() {
+        checkboxes = document.getElementsByName('checkbox');
+        let query = '?userList=';
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            if (checkboxes[i].checked) {
+                query += checkboxes[i].id + ','
+            }
+        }
+        if (query === '?userList=') {
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/User/Block' + query, false);
+        xhr.send();
+
+        window.location.href = '/';
+    }
+
+    function unblockUsers() {
+        checkboxes = document.getElementsByName('checkbox');
+        let query = '?userList=';
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            if (checkboxes[i].checked) {
+                query += checkboxes[i].id + ','
+            }
+        }
+        if (query === '?userList=') {
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/User/Unblock' + query, false);
+        xhr.send();
+
+        window.location.href = '/';
+    }
+
+    function toggle(source) {
+        checkboxes = document.getElementsByName('checkbox');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+</script>
